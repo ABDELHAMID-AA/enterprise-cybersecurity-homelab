@@ -17,14 +17,14 @@ A hands-on enterprise lab built with VMware Workstation, OPNsense, Windows Serve
 
 | Phase | Focus | Status |
 |---|---|---|
-| 1 | Infrastructure and identity (OPNsense, AD, DNS, DHCP, GPO) | In progress |
+| 1 | Infrastructure and identity | In progress |
 | 2 | Security monitoring and Windows telemetry | Planned |
 | 3 | Splunk SIEM and detection engineering | Planned |
 | 4 | Azure administration and Microsoft Sentinel | Planned |
 | 5 | Hybrid identity and cross-environment monitoring | Planned |
 | 6 | SOC investigations and threat hunting | Planned |
 
-Each phase has its own folder with full build steps, configs, and evidence (see [Documentation](#documentation)).
+Full build steps, configs, and evidence live in each phase folder (see [Documentation](#documentation)).
 
 ## Architecture (target)
 
@@ -47,16 +47,90 @@ Each phase has its own folder with full build steps, configs, and evidence (see 
 
 This is the intended design, not a claim that every integration is deployed yet.
 
-## Phase 6 Investigation Scenarios (planned)
+---
 
-- Multi-stage intrusion reconstruction
-- Active Directory attack paths
-- Lateral movement and credential misuse
-- Persistence and defense evasion
-- Network threat hunting (DNS, beaconing, C2)
-- Hybrid identity and cloud privilege escalation
+## Phase 1: Enterprise Infrastructure and Identity
+
+Build the foundation of a virtual enterprise network.
+
+- **Network core:** OPNsense firewall, routing, segmentation, and Kea DHCP
+- **Identity:** Windows Server, Active Directory DS, internal DNS with external forwarding
+- **Endpoints:** Domain-joined Windows client with validated DHCP/DNS settings
+- **Structure:** OUs, security groups (AGDLP), and least-privilege administration
+- **Policy:** Group Policy baselines, password and lockout policies
+- **Troubleshooting:** Documented DHCP, gateway, DNS forwarding, and connectivity cases
+
+**Target outcome:** A working, validated domain environment with documented design decisions and troubleshooting evidence.
+
+## Phase 2: Security Monitoring
+
+Establish visibility into what happens across the infrastructure.
+
+- **Auditing:** Windows Security and AD audit policy via GPO
+- **Authentication:** Collect and analyze logon, failure, and lockout events
+- **Change tracking:** Account, group, and policy changes
+- **Endpoint telemetry:** Sysmon for process, network, and registry activity
+- **Event generation:** Controlled test activity to produce known-good and suspicious events
+- **Mapping:** Link observed behavior to MITRE ATT&CK
+
+**Target outcome:** A documented baseline of normal activity and a catalog of suspicious behavior with the events that reveal it.
+
+## Phase 3: Splunk SIEM
+
+Deploy Splunk as the central monitoring and investigation platform.
+
+- **Ingestion:** Forward Windows Security and Sysmon logs
+- **Data model:** Indexes, sourcetypes, fields, and timestamps
+- **Searching:** SPL for authentication and endpoint activity
+- **Visualization:** Dashboards and reports
+- **Detections:** Alerts for lockouts, privilege changes, suspicious process execution
+- **Tuning:** False-positive analysis and documented limitations
+
+**Target outcome:** A tested detection set with documented logic, tuning notes, and recommended responses.
+
+## Phase 4: Microsoft Azure and Sentinel
+
+Extend the lab into the cloud and build cloud security monitoring.
+
+- **Azure admin:** Resource groups, VNets, VMs, storage, RBAC, and cost control
+- **Controls:** Network security, least privilege, and activity monitoring
+- **Sentinel:** Workspace, data connectors, tables, and analytics rules
+- **KQL:** Queries for investigation and hunting
+- **Response:** Incident management, workbooks, and automation where available
+
+**Target outcome:** A working Sentinel workspace with documented KQL queries, analytics rules, and cloud investigation procedures.
+
+## Phase 5: Hybrid Identity and Security
+
+Connect on-premises identity with the cloud.
+
+- **Sync:** Supported hybrid synchronization between AD DS and Entra ID
+- **Cloud identity:** Role administration, sign-in logs, and audit logs
+- **Monitoring:** Correlate on-prem and cloud authentication events
+- **Investigation:** Suspicious identity activity across both environments
+
+**Target outcome:** A verified hybrid deployment. Having AD and Entra ID side by side does not count until sync and monitoring workflows are validated.
+
+## Phase 6: Advanced SOC Investigations and Threat Hunting
+
+Run realistic multi-stage investigations by correlating endpoint, AD, network, SIEM, and cloud telemetry.
+
+- **Multi-stage intrusion reconstruction** across hosts
+- **Active Directory attack-path investigation** (privileges, delegation abuse)
+- **Living-off-the-land activity** (admin vs. malicious PowerShell and utilities)
+- **Lateral movement and credential misuse**
+- **Persistence and defense evasion** (tasks, services, registry, logging tampering)
+- **Insider threat and compromised account** analysis
+- **Network threat hunting** (DNS, beaconing, C2)
+- **Hybrid identity incident investigation** (AD + Entra ID)
+- **Cloud privilege escalation and persistence** (Azure roles, service principals)
+- **Detection engineering** with SPL and KQL, including false-positive measurement and gap analysis
 
 Each investigation follows: **Detection → Evidence → Timeline → Analysis → Impact → Response → Detection improvement.**
+
+**Target outcome:** A portfolio of evidence-based investigations showing threat hunting, SIEM analysis, and incident response reasoning.
+
+---
 
 ## Technologies
 
