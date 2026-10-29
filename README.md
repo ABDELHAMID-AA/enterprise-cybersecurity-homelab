@@ -28,26 +28,45 @@ Full build steps, configs, and evidence live in each phase folder (see [Document
 
 ## Architecture (target)
 
+The intended architecture will evolve as new phases are implemented.
+
 ```text
-        Internet
-           |
-   OPNsense Firewall
-           |
-   Internal LAN 10.10.10.0/24
-   ├── DC01  (AD DS + DNS, corp.local)
-   ├── WS01  (domain-joined client)
-   └── Other lab VMs
-           |
-   Windows Security + Sysmon logs
-      ├── Splunk
-      └── Azure / Entra ID → Microsoft Sentinel
-           |
-   Detection and investigation
+                     Internet / Upstream Network
+                                |
+                         VMware Networking
+                                |
+                         OPNsense Firewall
+                                |
+                       Internal Lab Network
+                         10.10.10.0/24
+                                |
+              +-----------------+-----------------+
+              |                 |                 |
+        Windows Server     Windows Client    Other Lab VMs
+             DC01               WS01
+              |
+       Active Directory
+          corp.local
+              |
+      DNS / DHCP Integration
+              |
+      Windows Security Events
+              |
+        +-----+------------------+
+        |                        |
+      Splunk                 Microsoft Cloud
+      SIEM                   Azure / Entra ID
+        |                        |
+        |                  Microsoft Sentinel
+        +------------+-----------+
+                     |
+            Security Investigations
+            Detection and Correlation
 ```
 
-This is the intended design, not a claim that every integration is deployed yet.
+This is a conceptual target architecture, not a claim that all integrations are currently deployed.
 
----
+The final design may use different log-collection paths for different sources. Only supported and validated data flows will be documented as operational.
 
 ## Phase 1: Enterprise Infrastructure and Identity
 
@@ -144,7 +163,6 @@ VMware Workstation · OPNsense · Kea DHCP · Windows Server · Active Directory
 | SC-200 | Sentinel, KQL, incident investigation |
 | Splunk Core Certified Power User | SPL, reports, dashboards |
 
-Verify exam codes and requirements on the vendors' official pages before scheduling.
 
 ## Documentation
 
@@ -165,13 +183,6 @@ Detailed build notes live in the phase folders:
 
 Folders are added as content is published.
 
-## Security Notes
-
-- Keep the lab isolated from production networks.
-- Use test accounts and non-sensitive data only.
-- Redact credentials, tokens, and keys from screenshots and configs.
-- Never commit VM disks, secrets, or private keys.
-- Remove unused cloud resources to control cost.
 
 ## Principle
 
